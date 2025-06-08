@@ -1,9 +1,17 @@
+import { useEffect } from "react";
 import { useCurrencyContext } from "@/context/CurrencyContext";
 
 export default function CurrencySwitcher() {
   const currencyCtx = useCurrencyContext();
   const currency = currencyCtx?.currency || 'ZAR';
   const changeCurrency = currencyCtx?.changeCurrency;
+
+  useEffect(() => {
+    const stored = typeof localStorage !== 'undefined' ? localStorage.getItem('currency') : null;
+    if (stored && stored !== currency) {
+      changeCurrency?.(stored);
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (changeCurrency) {

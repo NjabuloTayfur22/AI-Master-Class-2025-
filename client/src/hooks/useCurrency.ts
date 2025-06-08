@@ -94,6 +94,13 @@ export function useCurrency() {
 
   async function changeCurrency(newCurrency: string) {
     const controller = new AbortController();
+    // Immediately update local state so UI reflects the new currency choice
+    setCurrency(newCurrency);
+    try {
+      localStorage.setItem('currency', newCurrency);
+    } catch {
+      /* ignore */
+    }
     setLoading(true);
     try {
       const res = await fetch(`https://api.exchangerate.host/latest?base=ZAR&symbols=${newCurrency}`, {
@@ -104,7 +111,6 @@ export function useCurrency() {
 
       const data = await res.json();
       if (data.rates && data.rates[newCurrency]) {
-        setCurrency(newCurrency);
         setRate(data.rates[newCurrency]);
         try {
           localStorage.setItem('currency', newCurrency);
