@@ -52,7 +52,7 @@ export default function Hero() {
   const particleCount = shouldReduceMotion ? 0 : isMobile ? 30 : 60;
 
   return (
-    <section className="relative min-h-screen pt-24 flex items-center justify-center overflow-hidden animated-bg">
+    <section className="relative min-h-screen snap-start pt-24 flex items-center justify-center overflow-hidden animated-bg">
       {/* Luxury floating particles */}
       <div className="particles">
         {Array.from({ length: particleCount }).map((_, i) => (

@@ -52,9 +52,9 @@ export default function Pricing() {
   ];
 
   return (
-    <section 
-      id="pricing" 
-      className="relative overflow-hidden py-20 bg-gradient-to-b from-black via-navy-900 to-black"
+    <section
+      id="pricing"
+      className="min-h-screen snap-start relative overflow-hidden py-20 bg-gradient-to-b from-black via-navy-900 to-black"
     >
       <div className="container-responsive relative z-10">
         <div className="flex justify-end mb-6">

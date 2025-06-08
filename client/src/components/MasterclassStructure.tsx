@@ -132,9 +132,9 @@ export default function MasterclassStructure() {
   ];
 
   return (
-    <section 
-      id="structure" 
-      className="py-20 relative overflow-hidden"
+    <section
+      id="structure"
+      className="min-h-screen snap-start py-20 relative overflow-hidden"
       style={{
         background: `
           radial-gradient(circle at 30% 20%, rgba(20, 184, 166, 0.1) 0%, transparent 50%),
