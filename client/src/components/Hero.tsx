@@ -4,6 +4,7 @@ import CountdownTimer from "./CountdownTimer";
 import VideoModal from "./VideoModal";
 import SpectacularLogo from "./SpectacularLogo";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
+import { formatCurrency } from "@/lib/formatCurrency";
 import { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useCurrencyContext } from "@/context/CurrencyContext";
@@ -17,7 +18,6 @@ export default function Hero() {
   const currencyCtx = useCurrencyContext();
   const currency = currencyCtx?.currency || 'ZAR';
   const convert = currencyCtx?.convert || ((v: number) => v);
-  const getSymbol = currencyCtx?.getSymbol || ((c: string) => 'R');
   const loading = currencyCtx?.loading || false;
 
   useEffect(() => {
@@ -309,7 +309,7 @@ export default function Hero() {
                 >
                   <Rocket className="inline mr-3" size={24} />
                 </motion.div>
-                {`CLAIM YOUR LEGACY - ${loading ? '...' : `${getSymbol(currency)}${convert(249).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}`}
+                {`CLAIM YOUR LEGACY - ${loading ? '...' : formatCurrency(convert(249), currency)}`}
               </motion.div>
             </motion.button>
             

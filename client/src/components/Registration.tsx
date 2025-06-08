@@ -28,6 +28,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { fadeInUp, staggerContainer, scaleIn, bounceIn } from "@/lib/animations";
 import { useCurrencyContext } from "@/context/CurrencyContext";
+import { formatCurrency } from "@/lib/formatCurrency";
 
 
 const registrationSchema = z.object({
@@ -54,7 +55,6 @@ export default function Registration() {
   const currencyCtx = useCurrencyContext();
   const currency = currencyCtx?.currency || 'ZAR';
   const convert = currencyCtx?.convert || ((v: number) => v);
-  const getSymbol = currencyCtx?.getSymbol || ((c: string) => 'R');
   const loading = currencyCtx?.loading || false;
   const [registrationType, setRegistrationType] = useState<"individual" | "group">("individual");
 
@@ -283,10 +283,10 @@ export default function Registration() {
               <div className="mb-6">
                 <div className="flex items-baseline space-x-2">
                   <span className="text-4xl font-bold gradient-text">
-                    {loading ? '...' : `${getSymbol(currency)}${convert(249).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
+                    {loading ? '...' : formatCurrency(convert(249), currency)}
                   </span>
                   <span className="text-gray-400 line-through">
-                    {loading ? '...' : `${getSymbol(currency)}${convert(399).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
+                    {loading ? '...' : formatCurrency(convert(399), currency)}
                   </span>
                 </div>
                 <p className="text-green-400 text-sm font-semibold">Save 38% - Limited Time</p>
@@ -370,10 +370,10 @@ export default function Registration() {
               <div className="mb-6">
                 <div className="flex items-baseline space-x-2">
                   <span className="text-4xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
-                    {loading ? '...' : `${getSymbol(currency)}${convert(1000).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
+                    {loading ? '...' : formatCurrency(convert(1000), currency)}
                   </span>
                   <span className="text-gray-400 line-through">
-                    {loading ? '...' : `${getSymbol(currency)}${convert(1500).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
+                    {loading ? '...' : formatCurrency(convert(1500), currency)}
                   </span>
                 </div>
                 <p className="text-green-400 text-sm font-semibold">Save 33% - Early Bird</p>
@@ -726,7 +726,7 @@ export default function Registration() {
                             <Rocket className="w-6 h-6" />
                           </motion.div>
                           <span>
-                            {`Secure My VIP Seat - ${loading ? '...' : `${getSymbol(currency)}${convert(registrationType === 'individual' ? 249 : 1000).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}`}
+                            {`Secure My VIP Seat - ${loading ? '...' : formatCurrency(convert(registrationType === 'individual' ? 249 : 1000), currency)}`}
                           </span>
                           <ArrowRight className="w-6 h-6" />
                         </>
