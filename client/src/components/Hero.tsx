@@ -6,6 +6,7 @@ import SpectacularLogo from "./SpectacularLogo";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 import { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useCurrency } from "@/hooks/useCurrency";
 
 export default function Hero() {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
@@ -13,6 +14,11 @@ export default function Hero() {
   const [energyLevel, setEnergyLevel] = useState(0);
   const isMobile = useIsMobile();
   const shouldReduceMotion = useReducedMotion();
+  const currencyCtx = useCurrency();
+  const currency = currencyCtx?.currency || 'ZAR';
+  const convert = currencyCtx?.convert || ((v: number) => v);
+  const getSymbol = currencyCtx?.getSymbol || ((c: string) => 'R');
+  const loading = currencyCtx?.loading || false;
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -303,7 +309,7 @@ export default function Hero() {
                 >
                   <Rocket className="inline mr-3" size={24} />
                 </motion.div>
-                CLAIM YOUR LEGACY - R249
+                {`CLAIM YOUR LEGACY - ${loading ? '...' : `${getSymbol(currency)}${convert(249).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}`}
               </motion.div>
             </motion.button>
             
