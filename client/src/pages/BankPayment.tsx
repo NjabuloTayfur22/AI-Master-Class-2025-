@@ -23,6 +23,7 @@ export default function BankPayment() {
     lastName: "",
     email: "",
     phone: "",
+    country: "",
     transactionId: "",
     transferAmount: "",
     bankTransferDate: "",
@@ -41,6 +42,8 @@ export default function BankPayment() {
           firstName: parsed.firstName || "",
           lastName: parsed.lastName || "",
           email: parsed.email || "",
+          phone: parsed.phone || "",
+          country: parsed.country || "",
           planType: selectedPlan,
           transferAmount: selectedPlan === 'premium' ? "1000" : "249"
         }));
@@ -131,7 +134,7 @@ Please use the reference number for your transfer and keep your transaction rece
     e.preventDefault();
     
     // Validate required fields
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.transactionId) {
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone || !formData.transactionId) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields",
@@ -275,6 +278,11 @@ Thank you!`
                     <p className="text-gray-300">
                       <span className="text-gray-400">Email:</span> {registrationData.email}
                     </p>
+                    {registrationData.phone && (
+                      <p className="text-gray-300">
+                        <span className="text-gray-400">Phone:</span> {registrationData.phone}
+                      </p>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -411,6 +419,21 @@ Thank you!`
                       value={formData.email}
                       onChange={handleInputChange}
                       className="bg-gray-800/50 border-gray-600 text-white"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="phone" className="text-gray-300">Phone Number *</Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      autoComplete="tel"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="bg-gray-800/50 border-gray-600 text-white"
+                      placeholder="+1 555 000 0000"
                       required
                     />
                   </div>
