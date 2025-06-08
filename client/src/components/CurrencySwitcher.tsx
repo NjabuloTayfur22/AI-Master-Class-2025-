@@ -21,6 +21,10 @@ export default function CurrencySwitcher() {
       <option value="USD">USD</option>
       <option value="EUR">EUR</option>
       <option value="GBP">GBP</option>
-    </select>
+      <option value="INR">INR</option>
+      <option value="AUD">AUD</option>
+      <option value="CAD">CAD</option>
+      <option value="JPY">JPY</option>
+   </select>
   );
 }
