@@ -49,9 +49,9 @@ export default function Overview() {
   const colors = ['text-emerald-400', 'text-violet-400', 'text-orange-400'];
 
   return (
-    <section 
-      id="overview" 
-      className="py-32 relative overflow-hidden parallax-bg"
+    <section
+      id="overview"
+      className="min-h-screen snap-start py-32 relative overflow-hidden parallax-bg"
       style={{
         backgroundImage: `
           url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2072&q=80'),

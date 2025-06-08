@@ -8,7 +8,7 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-navy-900 text-white">
+    <div className="snap-y snap-mandatory h-screen overflow-y-scroll bg-navy-900 text-white scroll-smooth">
       <Navigation />
       <Hero />
       <Overview />

@@ -97,9 +97,9 @@ export default function Registration() {
   };
 
   return (
-    <section 
-      id="register" 
-      className="py-20 relative overflow-hidden"
+    <section
+      id="register"
+      className="min-h-screen snap-start py-20 relative overflow-hidden"
       style={{
         background: `
           radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
