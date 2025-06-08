@@ -4,8 +4,10 @@ import { useToast } from '@/hooks/use-toast';
 export function useCurrency() {
   const { toast } = useToast();
 
-  const [currency, setCurrency] = useState('ZAR');
-  const [rate, setRate] = useState(1);
+  const savedCurrency = typeof localStorage !== 'undefined' ? localStorage.getItem('currency') : null;
+  const savedRate = typeof localStorage !== 'undefined' ? localStorage.getItem('currencyRate') : null;
+  const [currency, setCurrency] = useState(savedCurrency || 'ZAR');
+  const [rate, setRate] = useState(savedRate ? parseFloat(savedRate) : 1);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -58,6 +60,12 @@ export function useCurrency() {
         if (data.rates && data.rates[detectedCurrency]) {
           setCurrency(detectedCurrency);
           setRate(data.rates[detectedCurrency]);
+          try {
+            localStorage.setItem('currency', detectedCurrency);
+            localStorage.setItem('currencyRate', String(data.rates[detectedCurrency]));
+          } catch {
+            /* ignore */
+          }
         }
       } catch (err) {
         // Fallback to ZAR pricing
@@ -68,6 +76,12 @@ export function useCurrency() {
         });
         setCurrency('ZAR');
         setRate(1);
+        try {
+          localStorage.setItem('currency', 'ZAR');
+          localStorage.setItem('currencyRate', '1');
+        } catch {
+          /* ignore */
+        }
       } finally {
         setLoading(false);
       }
@@ -92,6 +106,12 @@ export function useCurrency() {
       if (data.rates && data.rates[newCurrency]) {
         setCurrency(newCurrency);
         setRate(data.rates[newCurrency]);
+        try {
+          localStorage.setItem('currency', newCurrency);
+          localStorage.setItem('currencyRate', String(data.rates[newCurrency]));
+        } catch {
+          /* ignore */
+        }
       }
     } catch (err) {
       toast({
@@ -101,6 +121,12 @@ export function useCurrency() {
       });
       setCurrency('ZAR');
       setRate(1);
+      try {
+        localStorage.setItem('currency', 'ZAR');
+        localStorage.setItem('currencyRate', '1');
+      } catch {
+        /* ignore */
+      }
     } finally {
       setLoading(false);
     }
@@ -112,7 +138,7 @@ export function useCurrency() {
     new Intl.NumberFormat(undefined, {
       style: 'currency',
       currency: c,
-      currencyDisplay: 'code',
+      currencyDisplay: 'narrowSymbol',
     })
       .formatToParts(0)
       .find(part => part.type === 'currency')?.value || c;
