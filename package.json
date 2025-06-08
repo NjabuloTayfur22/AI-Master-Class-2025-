@@ -4,7 +4,8 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "dev": "netlify dev",
+    "dev": "vite",
+    "netlify:dev": "netlify dev",
     "prebuild": "node scripts/build-setup.mjs",
     "build": "vite build",
     "preview": "vite preview",

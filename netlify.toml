@@ -20,7 +20,7 @@
   command = "npm run dev"
   port = 8888
   targetPort = 5173
-  publish = "dist"
+  publish = "client"
   
 [functions]
   node_bundler = "esbuild"
