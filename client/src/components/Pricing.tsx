@@ -2,12 +2,12 @@ import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 import { useToast } from "@/hooks/use-toast";
-import { useCurrency } from "@/hooks/useCurrency";
+import { useCurrencyContext } from "@/context/CurrencyContext";
 import CurrencySwitcher from "./CurrencySwitcher";
 
 export default function Pricing() {
   const { toast } = useToast();
-  const currencyCtx = useCurrency();
+  const currencyCtx = useCurrencyContext();
   const currency = currencyCtx?.currency || 'ZAR';
   const convert = currencyCtx?.convert || ((v: number) => v);
   const getSymbol = currencyCtx?.getSymbol || ((c: string) => 'R');

@@ -27,6 +27,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { fadeInUp, staggerContainer, scaleIn, bounceIn } from "@/lib/animations";
+import { useCurrencyContext } from "@/context/CurrencyContext";
 
 
 const registrationSchema = z.object({
@@ -50,7 +51,7 @@ type RegistrationFormData = z.infer<typeof registrationSchema>;
 
 export default function Registration() {
   const { toast } = useToast();
-  const currencyCtx = useCurrency();
+  const currencyCtx = useCurrencyContext();
   const currency = currencyCtx?.currency || 'ZAR';
   const convert = currencyCtx?.convert || ((v: number) => v);
   const getSymbol = currencyCtx?.getSymbol || ((c: string) => 'R');

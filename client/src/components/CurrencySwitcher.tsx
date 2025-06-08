@@ -1,7 +1,7 @@
-import { useCurrency } from "@/hooks/useCurrency";
+import { useCurrencyContext } from "@/context/CurrencyContext";
 
 export default function CurrencySwitcher() {
-  const currencyCtx = useCurrency();
+  const currencyCtx = useCurrencyContext();
   const currency = currencyCtx?.currency || 'ZAR';
   const changeCurrency = currencyCtx?.changeCurrency;
 

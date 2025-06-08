@@ -6,11 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { useCurrency } from "@/hooks/useCurrency";
+import { useCurrencyContext } from "@/context/CurrencyContext";
 
 export default function BankPayment() {
   const { toast } = useToast();
-  const currencyCtx = useCurrency();
+  const currencyCtx = useCurrencyContext();
   const currency = currencyCtx?.currency || 'ZAR';
   const convert = currencyCtx?.convert || ((v: number) => v);
   const getSymbol = currencyCtx?.getSymbol || ((c: string) => 'R');
