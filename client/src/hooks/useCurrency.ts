@@ -27,7 +27,22 @@ export function useCurrency() {
           }
         } else {
           const locale = navigator.language || 'en-ZA';
-          detectedCurrency = locale.split('-').pop()?.toUpperCase() || 'ZAR';
+          const region = locale.split('-')[1]?.toUpperCase() || 'ZA';
+          const regionMap: Record<string, string> = {
+            ZA: 'ZAR',
+            US: 'USD',
+            GB: 'GBP',
+            IN: 'INR',
+            AU: 'AUD',
+            CA: 'CAD',
+            JP: 'JPY',
+          };
+          const euroRegions = ['DE','FR','ES','IT','PT','NL','BE','AT','IE','FI','GR','CY','LU','LV','LT','MT','SI','SK','EE'];
+          if (euroRegions.includes(region)) {
+            detectedCurrency = 'EUR';
+          } else {
+            detectedCurrency = regionMap[region] || 'USD';
+          }
         }
 
         const res = await fetch(
@@ -97,9 +112,10 @@ export function useCurrency() {
     new Intl.NumberFormat(undefined, {
       style: 'currency',
       currency: c,
+      currencyDisplay: 'code',
     })
       .formatToParts(0)
-      .find(part => part.type === 'currency')?.value || 'R';
+      .find(part => part.type === 'currency')?.value || c;
 
   return { currency, convert, getSymbol, loading, changeCurrency };
 }
