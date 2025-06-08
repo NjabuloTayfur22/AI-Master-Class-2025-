@@ -301,15 +301,16 @@ export default function Navigation() {
                   {item.label}
                 </motion.button>
               ))}
-              <motion.button
-                className="bg-gradient-to-r from-gold-500 to-gold-400 text-navy-900 w-full py-3 rounded-full font-semibold mt-4"
+              <motion.a
+                href="#register"
                 onClick={() => scrollToSection("#register")}
+                className="bg-gradient-to-r from-gold-500 to-gold-400 text-navy-900 w-full py-3 rounded-full font-semibold mt-4 text-center block"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.4 }}
               >
                 Register Now
-              </motion.button>
+              </motion.a>
             </div>
           </motion.div>
         )}
