@@ -3,6 +3,7 @@ import { Check } from "lucide-react";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 import { useToast } from "@/hooks/use-toast";
 import { useCurrencyContext } from "@/context/CurrencyContext";
+import { formatCurrency } from "@/lib/formatCurrency";
 import CurrencySwitcher from "./CurrencySwitcher";
 
 export default function Pricing() {
@@ -10,7 +11,6 @@ export default function Pricing() {
   const currencyCtx = useCurrencyContext();
   const currency = currencyCtx?.currency || 'ZAR';
   const convert = currencyCtx?.convert || ((v: number) => v);
-  const getSymbol = currencyCtx?.getSymbol || ((c: string) => 'R');
   const loading = currencyCtx?.loading || false;
 
   // Prices in ZAR (base)
@@ -125,7 +125,7 @@ export default function Pricing() {
                 {/* Price */}
                 <div className="text-center pb-4 border-b border-gray-800/50">
                   <span className="text-5xl md:text-6xl font-bold text-white">
-                    {loading ? '...' : `${getSymbol?.(currency)}${convert?.(plan.priceZAR).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
+                    {loading ? '...' : formatCurrency(convert?.(plan.priceZAR), currency)}
                   </span>
                   <span className="text-gray-400 text-lg">{plan.period}</span>
                   <div className="mt-2 text-yellow-500 text-sm font-medium">

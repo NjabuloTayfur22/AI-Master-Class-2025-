@@ -7,13 +7,13 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useCurrencyContext } from "@/context/CurrencyContext";
+import { formatCurrency } from "@/lib/formatCurrency";
 
 export default function BankPayment() {
   const { toast } = useToast();
   const currencyCtx = useCurrencyContext();
   const currency = currencyCtx?.currency || 'ZAR';
   const convert = currencyCtx?.convert || ((v: number) => v);
-  const getSymbol = currencyCtx?.getSymbol || ((c: string) => 'R');
   const loading = currencyCtx?.loading || false;
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -106,7 +106,7 @@ export default function BankPayment() {
   };
 
   const formatPrice = (priceZAR: number) => {
-    return `${getSymbol(currency)}${convert(priceZAR).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+    return formatCurrency(convert(priceZAR), currency);
   };
 
   const copyBankDetails = () => {
@@ -311,7 +311,7 @@ Thank you!`
                         : 'bg-black/20 text-yellow-400'
                     }`}
                   >
-                    {`Elite Access - ${loading ? '...' : `${getSymbol(currency)}${convert(planDetails.elite.priceZAR).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}`}
+                    {`Elite Access - ${loading ? '...' : formatPrice(planDetails.elite.priceZAR)}`}
                   </Button>
                   <Button
                     type="button"
@@ -322,7 +322,7 @@ Thank you!`
                         : 'bg-black/20 text-purple-400'
                     }`}
                   >
-                    {`Premium Mastermind - ${loading ? '...' : `${getSymbol(currency)}${convert(planDetails.premium.priceZAR).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}`}
+                    {`Premium Mastermind - ${loading ? '...' : formatPrice(planDetails.premium.priceZAR)}`}
                   </Button>
                 </div>
 
