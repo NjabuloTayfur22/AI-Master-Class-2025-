@@ -27,7 +27,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { fadeInUp, staggerContainer, scaleIn, bounceIn } from "@/lib/animations";
-import { countries } from "@/lib/countries";
+
 
 const registrationSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -50,6 +50,11 @@ type RegistrationFormData = z.infer<typeof registrationSchema>;
 
 export default function Registration() {
   const { toast } = useToast();
+  const currencyCtx = useCurrency();
+  const currency = currencyCtx?.currency || 'ZAR';
+  const convert = currencyCtx?.convert || ((v: number) => v);
+  const getSymbol = currencyCtx?.getSymbol || ((c: string) => 'R');
+  const loading = currencyCtx?.loading || false;
   const [registrationType, setRegistrationType] = useState<"individual" | "group">("individual");
 
   const form = useForm<RegistrationFormData>({
@@ -276,8 +281,12 @@ export default function Registration() {
               
               <div className="mb-6">
                 <div className="flex items-baseline space-x-2">
-                  <span className="text-4xl font-bold gradient-text">R249</span>
-                  <span className="text-gray-400 line-through">R399</span>
+                  <span className="text-4xl font-bold gradient-text">
+                    {loading ? '...' : `${getSymbol(currency)}${convert(249).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
+                  </span>
+                  <span className="text-gray-400 line-through">
+                    {loading ? '...' : `${getSymbol(currency)}${convert(399).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
+                  </span>
                 </div>
                 <p className="text-green-400 text-sm font-semibold">Save 38% - Limited Time</p>
               </div>
@@ -359,8 +368,12 @@ export default function Registration() {
               
               <div className="mb-6">
                 <div className="flex items-baseline space-x-2">
-                  <span className="text-4xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">R1000</span>
-                  <span className="text-gray-400 line-through">R1500</span>
+                  <span className="text-4xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+                    {loading ? '...' : `${getSymbol(currency)}${convert(1000).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
+                  </span>
+                  <span className="text-gray-400 line-through">
+                    {loading ? '...' : `${getSymbol(currency)}${convert(1500).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
+                  </span>
                 </div>
                 <p className="text-green-400 text-sm font-semibold">Save 33% - Early Bird</p>
               </div>
@@ -712,7 +725,7 @@ export default function Registration() {
                             <Rocket className="w-6 h-6" />
                           </motion.div>
                           <span>
-                            Secure My VIP Seat - {registrationType === "individual" ? "R249" : "R1000"}
+                            {`Secure My VIP Seat - ${loading ? '...' : `${getSymbol(currency)}${convert(registrationType === 'individual' ? 249 : 1000).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}`}
                           </span>
                           <ArrowRight className="w-6 h-6" />
                         </>

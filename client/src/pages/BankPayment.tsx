@@ -311,7 +311,7 @@ Thank you!`
                         : 'bg-black/20 text-yellow-400'
                     }`}
                   >
-                    Elite Access - R249
+                    {`Elite Access - ${loading ? '...' : `${getSymbol(currency)}${convert(planDetails.elite.priceZAR).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}`}
                   </Button>
                   <Button
                     type="button"
@@ -322,7 +322,7 @@ Thank you!`
                         : 'bg-black/20 text-purple-400'
                     }`}
                   >
-                    Premium Mastermind - R1000
+                    {`Premium Mastermind - ${loading ? '...' : `${getSymbol(currency)}${convert(planDetails.premium.priceZAR).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}`}
                   </Button>
                 </div>
 
