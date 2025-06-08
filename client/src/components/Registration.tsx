@@ -27,16 +27,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { fadeInUp, staggerContainer, scaleIn, bounceIn } from "@/lib/animations";
-import { useCurrency } from "@/hooks/useCurrency";
+
 
 const registrationSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Invalid email address"),
-  age: z.number().min(16, "Must be at least 16 years old").max(25, "Must be 25 years old or younger"),
+  phone: z.string().min(5, "Phone number is required"),
+  country: z.string().min(1, "Country is required"),
+  age: z
+    .number()
+    .min(16, "Must be at least 16 years old")
+    .max(25, "Must be 25 years old or younger"),
   businessIdea: z.string().optional(),
   registrationType: z.enum(["individual", "group"]),
-  agreeToTerms: z.boolean().refine(val => val === true, "You must agree to the terms and conditions"),
+  agreeToTerms: z
+    .boolean()
+    .refine((val) => val === true, "You must agree to the terms and conditions"),
 });
 
 type RegistrationFormData = z.infer<typeof registrationSchema>;
@@ -56,6 +63,8 @@ export default function Registration() {
       firstName: "",
       lastName: "",
       email: "",
+      phone: "",
+      country: "US",
       age: 18,
       businessIdea: "",
       registrationType: "individual",
@@ -74,6 +83,8 @@ export default function Registration() {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
+        phone: formData.phone,
+        country: formData.country,
         registrationType: formData.registrationType,
         businessIdea: formData.businessIdea,
         id: Math.random().toString(36).substr(2, 9)
@@ -511,6 +522,60 @@ export default function Registration() {
                 />
                 <FormField
                   control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-white font-semibold flex items-center space-x-2">
+                        <span>Phone</span>
+                        <span className="text-red-400">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <motion.div whileFocus={{ scale: 1.02 }}>
+                          <Input
+                            {...field}
+                            type="tel"
+                            autoComplete="tel"
+                            placeholder="+1 555 000 0000"
+                            className="bg-white/10 border-white/20 text-white placeholder-gray-400 focus:border-gold-500 focus:bg-white/15 transition-all duration-300 h-12 rounded-xl"
+                          />
+                        </motion.div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="country"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-white font-semibold flex items-center space-x-2">
+                        <span>Country</span>
+                        <span className="text-red-400">*</span>
+                      </FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="bg-white/10 border-white/20 text-white focus:border-gold-500 focus:bg-white/15 transition-all duration-300 h-12 rounded-xl">
+                            <SelectValue placeholder="Select your country" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="bg-navy-800 border-white/20 max-h-60 overflow-y-auto">
+                          {countries.map((c) => (
+                            <SelectItem key={c.code} value={c.code} className="text-white hover:bg-gold-500/20">
+                              {c.label} ({c.dial_code})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
                   name="age"
                   render={({ field }) => (
                     <FormItem>
@@ -518,7 +583,7 @@ export default function Registration() {
                         <span>Age</span>
                         <span className="text-red-400">*</span>
                       </FormLabel>
-                      <Select onValueChange={(value) => field.onChange(parseInt(value))}>
+                      <Select onValueChange={(value) => field.onChange(parseInt(value))} defaultValue={field.value.toString()}>
                         <FormControl>
                           <SelectTrigger className="bg-white/10 border-white/20 text-white focus:border-gold-500 focus:bg-white/15 transition-all duration-300 h-12 rounded-xl">
                             <SelectValue placeholder="Select your age" />
