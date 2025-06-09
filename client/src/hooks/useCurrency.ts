@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
+// Fallback rates when live exchange rate APIs are unavailable
+const FALLBACK_RATES: Record<string, number> = {
+  ZAR: 1,
+  USD: 0.053,
+  EUR: 0.049,
+  GBP: 0.042,
+  INR: 4.4,
+  AUD: 0.08,
+  CAD: 0.07,
+  JPY: 8.5,
+};
+
 export function useCurrency() {
   const { toast } = useToast();
 
@@ -14,45 +26,44 @@ export function useCurrency() {
     const controller = new AbortController();
 
     async function fetchRate() {
+      let detectedCurrency = 'ZAR';
+
       try {
-        // Attempt to determine the user's currency via IP geolocation
         const geoRes = await fetch('https://ipapi.co/json/', {
           signal: controller.signal,
         });
-
-        let detectedCurrency = 'ZAR';
 
         if (geoRes.ok) {
           const geoData = await geoRes.json();
           if (geoData && geoData.currency) {
             detectedCurrency = geoData.currency.toUpperCase();
           }
-        } else {
-          const locale = navigator.language || 'en-ZA';
-          const region = locale.split('-')[1]?.toUpperCase() || 'ZA';
-          const regionMap: Record<string, string> = {
-            ZA: 'ZAR',
-            US: 'USD',
-            GB: 'GBP',
-            IN: 'INR',
-            AU: 'AUD',
-            CA: 'CAD',
-            JP: 'JPY',
-          };
-          const euroRegions = ['DE','FR','ES','IT','PT','NL','BE','AT','IE','FI','GR','CY','LU','LV','LT','MT','SI','SK','EE'];
-          if (euroRegions.includes(region)) {
-            detectedCurrency = 'EUR';
-          } else {
-            detectedCurrency = regionMap[region] || 'USD';
-          }
         }
+      } catch {
+        // ignore network errors and fall back to locale detection
+      }
 
-        const res = await fetch(
-          `https://api.exchangerate.host/latest?base=ZAR&symbols=${detectedCurrency}`,
-          {
-            signal: controller.signal,
-          }
-        );
+      if (detectedCurrency === 'ZAR') {
+        const locale = navigator.language || 'en-ZA';
+        const region = locale.split('-')[1]?.toUpperCase() || 'ZA';
+        const regionMap: Record<string, string> = {
+          ZA: 'ZAR',
+          US: 'USD',
+          GB: 'GBP',
+          IN: 'INR',
+          AU: 'AUD',
+          CA: 'CAD',
+          JP: 'JPY',
+        };
+        const euroRegions = ['DE','FR','ES','IT','PT','NL','BE','AT','IE','FI','GR','CY','LU','LV','LT','MT','SI','SK','EE'];
+        detectedCurrency = euroRegions.includes(region)
+          ? 'EUR'
+          : regionMap[region] || 'USD';
+      }
+
+      try {
+        const res = await fetch(`https://api.exchangerate.host/latest?base=ZAR&symbols=${detectedCurrency}`,
+          { signal: controller.signal });
 
         if (!res.ok) throw new Error('Failed to fetch rates');
 
@@ -66,21 +77,34 @@ export function useCurrency() {
           } catch {
             /* ignore */
           }
+          setLoading(false);
+          return;
         }
-      } catch (err) {
-        // Fallback to ZAR pricing
-        toast({
-          title: 'Currency conversion unavailable',
-          description: 'Prices shown in ZAR',
-          variant: 'destructive',
-        });
-        setCurrency('ZAR');
-        setRate(1);
-        try {
-          localStorage.setItem('currency', 'ZAR');
-          localStorage.setItem('currencyRate', '1');
-        } catch {
-          /* ignore */
+        throw new Error('Invalid data');
+      } catch {
+        // Use fallback rates if live data fails
+        const fallback = FALLBACK_RATES[detectedCurrency];
+        if (fallback) {
+          toast({
+            title: 'Using offline rates',
+            description: `Prices shown in ${detectedCurrency}`,
+          });
+          setCurrency(detectedCurrency);
+          setRate(fallback);
+          try {
+            localStorage.setItem('currency', detectedCurrency);
+            localStorage.setItem('currencyRate', String(fallback));
+          } catch {
+            /* ignore */
+          }
+        } else {
+          toast({
+            title: 'Currency conversion unavailable',
+            description: 'Prices shown in ZAR',
+            variant: 'destructive',
+          });
+          setCurrency('ZAR');
+          setRate(1);
         }
       } finally {
         setLoading(false);
@@ -103,9 +127,8 @@ export function useCurrency() {
     }
     setLoading(true);
     try {
-      const res = await fetch(`https://api.exchangerate.host/latest?base=ZAR&symbols=${newCurrency}`, {
-        signal: controller.signal,
-      });
+      const res = await fetch(`https://api.exchangerate.host/latest?base=ZAR&symbols=${newCurrency}`,
+        { signal: controller.signal });
 
       if (!res.ok) throw new Error('Failed to fetch rates');
 
@@ -119,19 +142,30 @@ export function useCurrency() {
           /* ignore */
         }
       }
-    } catch (err) {
-      toast({
-        title: 'Currency conversion unavailable',
-        description: 'Prices shown in ZAR',
-        variant: 'destructive',
-      });
-      setCurrency('ZAR');
-      setRate(1);
-      try {
-        localStorage.setItem('currency', 'ZAR');
-        localStorage.setItem('currencyRate', '1');
-      } catch {
-        /* ignore */
+    } catch {
+      const fallback = FALLBACK_RATES[newCurrency];
+      if (fallback) {
+        toast({ title: 'Using offline rates', description: `Prices shown in ${newCurrency}` });
+        setRate(fallback);
+        try {
+          localStorage.setItem('currencyRate', String(fallback));
+        } catch {
+          /* ignore */
+        }
+      } else {
+        toast({
+          title: 'Currency conversion unavailable',
+          description: 'Prices shown in ZAR',
+          variant: 'destructive',
+        });
+        setCurrency('ZAR');
+        setRate(1);
+        try {
+          localStorage.setItem('currency', 'ZAR');
+          localStorage.setItem('currencyRate', '1');
+        } catch {
+          /* ignore */
+        }
       }
     } finally {
       setLoading(false);
