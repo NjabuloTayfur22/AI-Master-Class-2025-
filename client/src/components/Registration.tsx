@@ -29,6 +29,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { fadeInUp, staggerContainer, scaleIn, bounceIn } from "@/lib/animations";
 import { useCurrencyContext } from "@/context/CurrencyContext";
 import { formatCurrency } from "@/lib/formatCurrency";
+import { countries } from "@/lib/countries";
 
 
 const registrationSchema = z.object({
